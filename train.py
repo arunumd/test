@@ -47,7 +47,7 @@ class Trainer(object):
                         sync_bn=args.sync_bn,
                         freeze_bn=args.freeze_bn)
         
-        network_D = networks.define_D(3, 64, netD='basic', n_layers_D=3, norm='batch', init_type='normal', init_gain=0.02, gpu_ids=self.args.gpu_ids)
+        network_D = networks.define_D(4, 64, netD='basic', n_layers_D=3, norm='batch', init_type='normal', init_gain=0.02, gpu_ids=self.args.gpu_ids)
         #=========================================================================================#
 
 
@@ -145,21 +145,27 @@ class Trainer(object):
             #                      Train the discriminator                       #
             # ================================================================== #
             output = self.network_G(image)
+            
+            ## solve tensor size
+            output_pred = np.argmax(output, axis=1)
+            ############################################
+            
+            
             self.set_requires_grad(self.network_D, True)
             self.optimizer_D.zero_grad()
             
             #Fake concatenate
-            fake_AB = torch.cat((image, output), 1)
+            fake_AB = torch.cat((image, output_pred), 1)
             
             ### debug###########
-            print('image size')
-            print(image.size())
-            print('output size')
-            print(output.size())
-            print('target size')
-            print(target.size())
-            print('fake_AB size')
-            print(fake_AB.size())
+#            print('image size')
+#            print(image.size())
+#            print('output_pred size')
+#            print(output_pred.size())
+#            print('target size')
+#            print(target.size())
+#            print('fake_AB size')
+#            print(fake_AB.size())
             ###################
             
             
@@ -182,7 +188,7 @@ class Trainer(object):
             self.set_requires_grad(self.network_D, False)
             self.optimizer_G.zero_grad()
             
-            fake_AB = torch.cat((image, output), 1)
+            fake_AB = torch.cat((image, output_pred), 1)
             pred_fake = self.network_D(fake_AB)
             loss_G_GAN = self.criterionGAN(pred_fake, True)
             # L1 loss G(A) = B
