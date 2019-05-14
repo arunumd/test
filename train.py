@@ -147,7 +147,7 @@ class Trainer(object):
             output = self.network_G(image)
             
             ## solve tensor size
-            output_pred =  np.squeeze(np.argmax(output, axis=1))
+            
             ############################################
             
             
@@ -155,17 +155,17 @@ class Trainer(object):
             self.optimizer_D.zero_grad()
             
             #Fake concatenate
-            fake_AB = torch.cat((image, output_pred), 1)
+            fake_AB = torch.cat((image, output), 1)
             
             ### debug###########
-#            print('image size')
-#            print(image.size())
-#            print('output_pred size')
-#            print(output_pred.size())
-#            print('target size')
-#            print(target.size())
-#            print('fake_AB size')
-#            print(fake_AB.size())
+            print('image size')
+            print(image.size())
+            print('output size')
+            print(output.size())
+            print('target size')
+            print(target.size())
+            print('fake_AB size')
+            print(fake_AB.size())
             ###################
             
             
@@ -188,7 +188,7 @@ class Trainer(object):
             self.set_requires_grad(self.network_D, False)
             self.optimizer_G.zero_grad()
             
-            fake_AB = torch.cat((image, output_pred), 1)
+            fake_AB = torch.cat((image, output), 1)
             pred_fake = self.network_D(fake_AB)
             loss_G_GAN = self.criterionGAN(pred_fake, True)
             # L1 loss G(A) = B
