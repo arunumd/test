@@ -14,6 +14,10 @@ from utils.saver import Saver
 from utils.summaries import TensorboardSummary
 from utils.metrics import Evaluator
 
+from modeling import create_model
+from modeling import networks
+
+
 class Trainer(object):
     def __init__(self, args):
         self.args = args
@@ -38,7 +42,7 @@ class Trainer(object):
         
         
         #==================================network==============================================#
-        network_D = define_D(3, 64, netD='basic', n_layers_D=3, norm='batch', init_type='normal', init_gain=0.02, self.args.gpu_ids)
+        network_D = networks.define_D(3, 64, netD='basic', n_layers_D=3, norm='batch', init_type='normal', init_gain=0.02, self.args.gpu_ids)
         #=======================================================================================#
 
         train_params = [{'params': model.get_1x_lr_params(), 'lr': args.lr},
