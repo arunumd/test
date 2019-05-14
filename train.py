@@ -147,7 +147,7 @@ class Trainer(object):
             output = self.network_G(image)
             
             ## solve tensor size
-            output_pred = np.argmax(output, axis=1)
+            output_pred =  np.squeeze(np.argmax(output, axis=1))
             ############################################
             
             
